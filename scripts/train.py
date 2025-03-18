@@ -96,7 +96,7 @@ def main():
     mfcc_target_norm = normalize(mfcc_target, mfcc_mean_target, mfcc_max_target)
     source_voices_norm = [normalize(v, mfcc_mean_source, mfcc_max_source) for v in source_voices]
 
-    # 🚀 Korrektur: Verwende den Mittelwert statt der Rohdaten
+    # Verwende den Mittelwert statt der Rohdaten
     target_stats = torch.tensor(mfcc_target_norm.mean(axis=0), dtype=torch.float32).to(device)
 
     # Model setup
