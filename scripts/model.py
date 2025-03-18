@@ -10,20 +10,20 @@ class VoiceConverter(nn.Module):
 
         # Encoder mit höherer Kapazität
         self.encoder_conv = nn.Sequential(
-            nn.Conv1d(input_dim, 512, kernel_size=5, padding=2),  # 🟢 Von 256 auf 512
+            nn.Conv1d(input_dim, 512, kernel_size=5, padding=2),  # Von 256 auf 512
             nn.BatchNorm1d(512),
-            nn.GELU(),  # 🟢 ReLU → GELU
+            nn.GELU(),  # ReLU → GELU
             nn.Dropout(dropout),
-            nn.Conv1d(512, 1024, kernel_size=3, padding=1),  # 🟢 Tiefere Schicht
+            nn.Conv1d(512, 1024, kernel_size=3, padding=1),  # Tiefere Schicht
             nn.BatchNorm1d(1024),
             nn.GELU()
         )
         
-        # 🟢 Encoder-Attention hinzugefügt
+        # Encoder-Attention hinzugefügt
         self.encoder_attention = nn.MultiheadAttention(2*hidden_dim, num_heads=4, dropout=dropout)
         
         self.encoder_lstm = nn.LSTM(
-            input_size=1024,  # 🟢 An Conv-Ausgang angepasst
+            input_size=1024,   An Conv-Ausgang angepasst
             hidden_size=hidden_dim,
             num_layers=num_layers,
             bidirectional=True,
@@ -45,10 +45,10 @@ class VoiceConverter(nn.Module):
             batch_first=True
         )
         
-        self.attention = nn.MultiheadAttention(4*hidden_dim, num_heads=8, dropout=dropout)  # 🟢 Mehr Heads
+        self.attention = nn.MultiheadAttention(4*hidden_dim, num_heads=8, dropout=dropout)  # Mehr Heads
         
         self.fc_out = nn.Sequential(
-            nn.Linear(8*hidden_dim, 2048),  # 🟢 Größere Layer
+            nn.Linear(8*hidden_dim, 2048),  # Größere Layer
             nn.LayerNorm(2048),
             nn.GELU(),
             nn.Dropout(dropout),
@@ -64,11 +64,11 @@ class VoiceConverter(nn.Module):
         original_seq_len = x.size(1)
         x = x.permute(0, 2, 1)
         
-        # 🟢 Verbesserter Encoder-Pfad
+        # Verbesserter Encoder-Pfad
         conv_out = self.encoder_conv(x)
         conv_out = conv_out.permute(0, 2, 1)
         
-        # 🟢 Encoder-Attention
+        # Encoder-Attention
         attn_in = conv_out.permute(1, 0, 2)
         attn_out, _ = self.encoder_attention(attn_in, attn_in, attn_in)
         conv_out = attn_out.permute(1, 0, 2)
