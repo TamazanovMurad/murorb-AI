@@ -24,7 +24,7 @@ def main():
     def load_and_process_audio(path, sr=SAMPLE_RATE, augment=False):
         y, sr = librosa.load(path, sr=sr)
         if augment:
-            y += 0.01 * np.random.randn(len(y))  # 🟢 Mehr Rauschen
+            y += 0.01 * np.random.randn(len(y))  # Mehr Rauschen
             if np.random.rand() > 0.3:
                 y = librosa.effects.pitch_shift(y, sr=sr, n_steps=np.random.uniform(-5, 5))
             if np.random.rand() > 0.3:
@@ -110,7 +110,7 @@ def main():
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=0.001, weight_decay=1e-5)  # Höhere LR
     scaler = GradScaler()
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(  # 🟢 Neuer Scheduler
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(  # Neuer Scheduler
         optimizer, T_0=15, T_mult=2, eta_min=1e-6
     )
 
@@ -173,11 +173,11 @@ def main():
                 loss_mse = F.mse_loss(recon, batch)
                 loss_mae = F.l1_loss(recon, batch)
                 
-                # 🔴 ENTFERNT: STFT-basierter Loss
+                # STFT-basierter Loss
                 kld = -0.5 * torch.mean(1 + logvar - mu.pow(2) - logvar.exp())
                 kld_weight = min(0.1 * (epoch / 20), 0.1)
                 
-                # 🟢 NEUE LOSS-BERECHNUNG
+                # NEUE LOSS-BERECHNUNG
                 total_loss = 0.6 * loss_mse + 0.4 * loss_mae + kld_weight * kld
             
             scaler.scale(total_loss).backward()
@@ -208,7 +208,7 @@ def main():
         else:
             early_stop_counter += 1
         
-        if early_stop_counter >= 10:  # 🟢 Früher Stopp
+        if early_stop_counter >= 10:  # Früher Stopp
             print(f"Early stopping at epoch {epoch+1}")
             break
 
