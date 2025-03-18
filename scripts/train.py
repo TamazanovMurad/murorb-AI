@@ -163,7 +163,7 @@ def main():
         for batch in pbar:
             batch = batch[0].to(device)
             
-            # 🚀 Batch-spezifische Statistik erstellen
+            # Batch-spezifische Statistik erstellen
             batch_target_stats = target_stats.unsqueeze(0).expand(batch.size(0), -1)
             
             optimizer.zero_grad()
